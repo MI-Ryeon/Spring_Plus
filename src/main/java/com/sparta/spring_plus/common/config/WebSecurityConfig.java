@@ -4,6 +4,7 @@ package com.sparta.spring_plus.common.config;
 import com.sparta.spring_plus.common.jwt.JwtAuthenticationFilter;
 import com.sparta.spring_plus.common.jwt.JwtAuthorizationFilter;
 import com.sparta.spring_plus.common.jwt.JwtUtil;
+import com.sparta.spring_plus.common.security.AuthenticationFailureHandlerImpl;
 import com.sparta.spring_plus.common.security.AuthenticationSuccessHandlerImpl;
 import com.sparta.spring_plus.common.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -42,7 +44,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil);
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, authenticationSuccessHandler(), authenticationFailureHandler());
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return filter;
     }
@@ -58,6 +60,11 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new AuthenticationFailureHandlerImpl();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // CSRF 설정
         http.csrf((csrf) -> csrf.disable());
@@ -70,8 +77,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
-                        .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
-                        .requestMatchers("/api/users/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers("/api/users/**").permitAll() // '/api/users/'로 시작하는 요청 모두 접근 허가
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 

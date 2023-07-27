@@ -6,16 +6,16 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import java.io.IOException;
 
-public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHandler {
+public class AuthenticationFailureHandlerImpl implements AuthenticationFailureHandler {
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_OK);
-        ApiResponseDto responseDto = new ApiResponseDto("로그인 성공", HttpStatus.OK.value());
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        ApiResponseDto responseDto = new ApiResponseDto("닉네임 또는 패스워드를 확인해주세요.", HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");
 
         ObjectMapper mapper = new ObjectMapper();

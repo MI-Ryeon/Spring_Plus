@@ -1,5 +1,8 @@
 package com.sparta.spring_plus.common.dto;
 
+import lombok.Getter;
+
+@Getter
 public class ApiResponseDto {
     private String message;
     private int statusCode;

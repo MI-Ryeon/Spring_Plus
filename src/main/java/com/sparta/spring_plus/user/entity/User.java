@@ -2,9 +2,12 @@ package com.sparta.spring_plus.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Entity
 @Getter
 @Table(name = "users")
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +21,7 @@ public class User {
 
     @Column(nullable = false, name = "role")
     @Enumerated(value = EnumType.STRING)
-    private UserRoleEnum role;
+    private UserRoleEnum role = UserRoleEnum.USER;
 
     public User(String username, String password) {
         this.username = username;
