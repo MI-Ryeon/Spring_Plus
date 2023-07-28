@@ -20,7 +20,7 @@ public class UserService {
         String password = requestDto.getPassword();
         String passwordConfirm = requestDto.getPasswordConfirm();
 
-        if (userRepository.findByUsername(username).isPresent()) {
+        if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("이미 회원가입된 아이디입니다.");
         }
 
