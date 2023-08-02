@@ -10,7 +10,6 @@ import com.sparta.spring_plus.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,5 +34,15 @@ public class PostService {
         post.setUser(user);
 
         postRepository.save(post);
+    }
+
+    public PostResponseDto getPost(Long id) {
+        Post post = findPost(id);
+        return new PostResponseDto(post);
+    }
+
+    public Post findPost(Long id) {
+        return postRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("선택한 게시글은 존재하지 않습니다."));
     }
 }
