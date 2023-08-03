@@ -10,6 +10,7 @@ import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "post")
 public class Post extends TimeStamped {
@@ -23,12 +24,16 @@ public class Post extends TimeStamped {
     @Column(nullable = false)
     private String contents;
 
-    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     public Post(PostRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.contents = requestDto.getContents();
+    }
+
+    public void update(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }

@@ -1,12 +1,15 @@
 package com.sparta.spring_plus.user.entity;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
-@Table(name = "users")
+@EqualsAndHashCode
+@Table(name = "user")
 @NoArgsConstructor
 public class User {
     @Id

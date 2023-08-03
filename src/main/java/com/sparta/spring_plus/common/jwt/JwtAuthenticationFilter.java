@@ -28,6 +28,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         this.jwtUtil = jwtUtil;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.authenticationFailureHandler = authenticationFailureHandler;
+        // 내가 원하는 Url에서 필터가 동작하길 원한다면 setFilterProcessesUrl()로 Url를 설정해줘야 작동함.
         setFilterProcessesUrl("/api/users/login");
         setAuthenticationSuccessHandler(authenticationSuccessHandler);
         setAuthenticationFailureHandler(authenticationFailureHandler);
@@ -35,9 +36,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        log.info("로그인 시도");
         try {
             LoginRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDto.class);
-            return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword(), null));
+
+            return getAuthenticationManager().authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            requestDto.getUsername(),
+                            requestDto.getPassword(),
+                            null
+                    )
+            );
         } catch (IOException e) {
             log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
@@ -45,12 +54,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws ServletException, IOException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        log.info("로그인 성공 및 JWT 생성");
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
         String token = jwtUtil.createToken(username, role);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        jwtUtil.addJwtToCookie(token, response);
         authenticationSuccessHandler.onAuthenticationSuccess(request, response, authResult);
     }
 

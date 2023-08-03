@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Objects;
+import java.util.concurrent.RejectedExecutionException;
 
 @RestControllerAdvice
 public class GlobalControllerAdvice {
@@ -30,6 +31,13 @@ public class GlobalControllerAdvice {
     // USER 가 ADMIN PAGE 에 접속하려 할 때 권한 없음을 알려주는 예외 처리
     @ExceptionHandler({AccessDeniedException.class})
     public ResponseEntity<ApiResponseDto> handleException(AccessDeniedException ex) {
+        ApiResponseDto apiResponseDto = new ApiResponseDto(ex.getMessage(), HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity<>(apiResponseDto, HttpStatus.FORBIDDEN);
+    }
+
+    // 작성자 or Admin 이 아닌 경우
+    @ExceptionHandler({RejectedExecutionException.class})
+    public ResponseEntity<ApiResponseDto> handleException(RejectedExecutionException ex) {
         ApiResponseDto apiResponseDto = new ApiResponseDto(ex.getMessage(), HttpStatus.FORBIDDEN.value());
         return new ResponseEntity<>(apiResponseDto, HttpStatus.FORBIDDEN);
     }

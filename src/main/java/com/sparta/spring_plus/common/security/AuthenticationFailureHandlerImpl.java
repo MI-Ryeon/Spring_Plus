@@ -15,7 +15,7 @@ public class AuthenticationFailureHandlerImpl implements AuthenticationFailureHa
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        ApiResponseDto responseDto = new ApiResponseDto("닉네임 또는 패스워드를 확인해주세요.", HttpStatus.UNAUTHORIZED.value());
+        ApiResponseDto responseDto = new ApiResponseDto("아이디 또는 패스워드를 확인해주세요.", HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");
 
         ObjectMapper mapper = new ObjectMapper();
