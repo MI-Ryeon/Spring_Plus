@@ -4,6 +4,7 @@ import com.sparta.spring_plus.common.dto.ApiResponseDto;
 import com.sparta.spring_plus.user.dto.SignupRequestDto;
 import com.sparta.spring_plus.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,6 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseDto> signup(@RequestBody SignupRequestDto requestDto) {
         ApiResponseDto result = userService.signup(requestDto);
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 }
